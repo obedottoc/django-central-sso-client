@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-central-sso-client"
+version = "0.1.0"
+description = "Central SSO client for Django"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "Django>=5.2",
+  "requests>=2.32",
+  "PyJWT>=2.9",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

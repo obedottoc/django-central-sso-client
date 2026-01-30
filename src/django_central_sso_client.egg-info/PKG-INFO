@@ -1,0 +1,25 @@
+Metadata-Version: 2.1
+Name: django-central-sso-client
+Version: 0.1.0
+Summary: Central SSO client for Django
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: Django>=5.2
+Requires-Dist: requests>=2.32
+Requires-Dist: PyJWT>=2.9
+
+# django-central-sso-client
+
+Installable client library for Central Auth SSO.
+
+Configure in your Django settings:
+
+```
+CENTRAL_SSO = {
+  "AUTH_SERVER_URL": "http://auth.localtest.me:8001",
+  "CLIENT_ID": "...",
+  "CLIENT_SECRET": "...",
+  "REDIRECT_URI": "http://client.localtest.me:8002/sso/callback/",
+  "SCOPES": "openid profile email offline_access",
+}
+```
