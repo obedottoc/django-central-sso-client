@@ -19,7 +19,7 @@ class SSOUser:
 
 
 class SSORequiredMiddleware(MiddlewareMixin):
-    exempt_prefixes = ("/sso/", "/admin/", "/static/","/iclock/")
+    exempt_prefixes = ("/sso/", "/admin/", "/static/","/iclock/","/secauth/")
 
     def process_request(self, request: HttpRequest):
         path = request.path
