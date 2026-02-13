@@ -19,7 +19,7 @@ class SSOUser:
 
 
 class SSORequiredMiddleware(MiddlewareMixin):
-    exempt_prefixes = ("/sso/", "/admin/", "/static/","/iclock/","/secauth/","/devices/get-pending-bioids","/devices/post-biometric-templates","/devices/bio-sync-get-pending-bioids","/devices/bio-sync-update-status")
+    exempt_prefixes = ("/sso/", "/admin/", "/static/","/healthz/","/iclock/","/secauth/","/devices/get-pending-bioids","/devices/post-biometric-templates","/devices/bio-sync-get-pending-bioids","/devices/bio-sync-update-status")
 
     def process_request(self, request: HttpRequest):
         path = request.path
