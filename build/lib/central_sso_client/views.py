@@ -14,6 +14,7 @@ from .state import store_auth_flow, pop_and_validate_flow
 @require_http_methods(["GET"])
 def login(request: HttpRequest) -> HttpResponse:
     # return HttpResponse("An error occurred during login1. Please try again later.", status=500)
+    return redirect("https://saveetha.ac.in")
     res = "Start"
     try:
         sso = get_sso_settings()
