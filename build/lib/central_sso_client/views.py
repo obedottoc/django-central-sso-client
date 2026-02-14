@@ -14,11 +14,12 @@ from .state import store_auth_flow, pop_and_validate_flow
 @require_http_methods(["GET"])
 def login(request: HttpRequest) -> HttpResponse:
     # return HttpResponse("An error occurred during login1. Please try again later.", status=500)
-    return redirect("https://saveetha.ac.in")
+    
     res = "Start"
     try:
         sso = get_sso_settings()
         cfg = get_openid_config()
+        return redirect("https://saveetha.ac.in")
         state = secrets.token_urlsafe(16)
         res += "A"
         nonce = secrets.token_urlsafe(16)
@@ -40,7 +41,7 @@ def login(request: HttpRequest) -> HttpResponse:
         res += "C"
         query = "&".join(f"{k}={requests.utils.quote(str(v))}" for k, v in params.items())
     except Exception as e:
-        print(f"Error during login: {e}")    
+        # print(f"Error during login: {e}")    
         return HttpResponse("An error occurred during login. Please try again later."+res, status=500)
     return redirect(f"{cfg['authorization_endpoint']}?{query}")
 
