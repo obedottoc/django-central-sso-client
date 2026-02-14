@@ -55,8 +55,9 @@ from urllib.parse import urlencode
 from django.utils.http import url_has_allowed_host_and_scheme
 @require_http_methods(["GET"])
 def login(request: HttpRequest) -> HttpResponse:
-    next_url = request.GET.get("next", "/")
     return redirect("https://saveetha.ac.in")
+    next_url = request.GET.get("next", "/")
+    
     if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
         next_url = "/"
 
