@@ -58,6 +58,14 @@ def login(request: HttpRequest) -> HttpResponse:
     next_url = request.GET.get("next", "/")
     if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
         next_url = "/"
+    sso = get_sso_settings()
+    cfg = get_openid_config()
+    state = secrets.token_urlsafe(16)
+    nonce = secrets.token_urlsafe(16)
+    verifier = generate_code_verifier()
+    challenge = code_challenge_s256(verifier)
+    next_url = request.GET.get("next", "/")
+
     
     store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
     
