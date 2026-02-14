@@ -68,7 +68,7 @@ def login(request: HttpRequest) -> HttpResponse:
     # if request is None:
     #     return redirect("https://accounts.saveetha.in")
     # return redirect("https://saveetha.ac.in")
-    store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
+    #store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
     
     
     params = {
