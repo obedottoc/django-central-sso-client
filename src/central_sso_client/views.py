@@ -14,7 +14,8 @@ logger = logging.getLogger(__name__)
 
 @require_http_methods(["GET"])
 def login(request: HttpRequest) -> HttpResponse:
-    return redirect("https://accounts.saveetha.in")
+    # return redirect("https://accounts.saveetha.in")
+    return HttpResponse("An error occurred during login. Please try again later.", status=500)
     try:
         sso = get_sso_settings()
         cfg = get_openid_config()
