@@ -58,8 +58,8 @@ def login(request: HttpRequest) -> HttpResponse:
     #return redirect("https://saveetha.ac.in")
     next_url = request.GET.get("next", "/")
     
-    if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
-        next_url = "/"
+    # if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+    #     next_url = "/"
 
     sso = get_sso_settings()
     cfg = get_openid_config()
