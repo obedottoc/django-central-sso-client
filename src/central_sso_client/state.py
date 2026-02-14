@@ -8,12 +8,13 @@ SESSION_FLOW_KEY = "_sso_flow"
 
 
 def store_auth_flow(request: HttpRequest, state: str, nonce: str, code_verifier: str, next_url: str) -> None:
-    request.session[SESSION_FLOW_KEY] = {
-        "state": state,
-        "nonce": nonce,
-        "code_verifier": code_verifier,
-        "next": next_url,
-    }
+    # request.session[SESSION_FLOW_KEY] = {
+    #     "state": state,
+    #     "nonce": nonce,
+    #     "code_verifier": code_verifier,
+    #     "next": next_url,
+    # }
+    return None
 
 
 def pop_and_validate_flow(request: HttpRequest, state: str) -> Dict[str, str]:
