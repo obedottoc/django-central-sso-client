@@ -67,7 +67,7 @@ def login(request: HttpRequest) -> HttpResponse:
     next_url = request.GET.get("next", "/")
     # if request is None:
     #     return redirect("https://accounts.saveetha.in")
-    #store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
+    store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
     
     
     params = {
@@ -80,7 +80,7 @@ def login(request: HttpRequest) -> HttpResponse:
         "code_challenge": challenge,
         "code_challenge_method": "S256",
     }
-    return redirect("https://saveetha.ac.in")
+    # return redirect("https://saveetha.ac.in")
     
     return redirect(f"{cfg['authorization_endpoint']}?{urlencode(params)}")
 
