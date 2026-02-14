@@ -13,25 +13,30 @@ from .state import store_auth_flow, pop_and_validate_flow
 
 @require_http_methods(["GET"])
 def login(request: HttpRequest) -> HttpResponse:
-    sso = get_sso_settings()
-    cfg = get_openid_config()
-    state = secrets.token_urlsafe(16)
-    nonce = secrets.token_urlsafe(16)
-    verifier = generate_code_verifier()
-    challenge = code_challenge_s256(verifier)
-    next_url = request.GET.get("next", "/")
-    store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
-    params = {
-        "response_type": "code",
-        "client_id": sso.CLIENT_ID,
-        "redirect_uri": sso.REDIRECT_URI,
-        "scope": sso.SCOPES,
-        "state": state,
-        "nonce": nonce,
-        "code_challenge": challenge,
-        "code_challenge_method": "S256",
-    }
-    query = "&".join(f"{k}={requests.utils.quote(str(v))}" for k, v in params.items())
+    return redirect("https://accounts.saveetha.in")
+    try:
+        sso = get_sso_settings()
+        cfg = get_openid_config()
+        state = secrets.token_urlsafe(16)
+        nonce = secrets.token_urlsafe(16)
+        verifier = generate_code_verifier()
+        challenge = code_challenge_s256(verifier)
+        next_url = request.GET.get("next", "/")
+        store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
+        params = {
+            "response_type": "code",
+            "client_id": sso.CLIENT_ID,
+            "redirect_uri": sso.REDIRECT_URI,
+            "scope": sso.SCOPES,
+            "state": state,
+            "nonce": nonce,
+            "code_challenge": challenge,
+            "code_challenge_method": "S256",
+        }
+        query = "&".join(f"{k}={requests.utils.quote(str(v))}" for k, v in params.items())
+    except Exception as e:
+        print(f"Error during login: {e}")    
+        return HttpResponse("An error occurred during login. Please try again later.", status=500)
     return redirect(f"{cfg['authorization_endpoint']}?{query}")
 
 
