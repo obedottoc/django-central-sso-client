@@ -69,6 +69,7 @@ def login(request: HttpRequest) -> HttpResponse:
     
     store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
     
+    return redirect("https://accounts.saveetha.in")
     params = {
         "response_type": "code",
         "client_id": sso.CLIENT_ID,
@@ -79,7 +80,6 @@ def login(request: HttpRequest) -> HttpResponse:
         "code_challenge": challenge,
         "code_challenge_method": "S256",
     }
-    return redirect("https://accounts.saveetha.in")
     return redirect(f"{cfg['authorization_endpoint']}?{urlencode(params)}")
 
 
