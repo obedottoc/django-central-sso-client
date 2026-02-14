@@ -12,6 +12,34 @@ from .state import store_auth_flow, pop_and_validate_flow
 import logging
 logger = logging.getLogger(__name__)
 
+@require_http_methods(["GET"])
+def login(request: HttpRequest) -> HttpResponse:
+    return redirect("https://accounts.saveetha.in")
+    try:
+        sso = get_sso_settings()
+        cfg = get_openid_config()
+        state = secrets.token_urlsafe(16)
+        nonce = secrets.token_urlsafe(16)
+        verifier = generate_code_verifier()
+        challenge = code_challenge_s256(verifier)
+        next_url = request.GET.get("next", "/")
+        store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
+        params = {
+            "response_type": "code",
+            "client_id": sso.CLIENT_ID,
+            "redirect_uri": sso.REDIRECT_URI,
+            "scope": sso.SCOPES,
+            "state": state,
+            "nonce": nonce,
+            "code_challenge": challenge,
+            "code_challenge_method": "S256",
+        }
+        query = "&".join(f"{k}={requests.utils.quote(str(v))}" for k, v in params.items())
+    except Exception as e:
+        print(f"Error during login: {e}")    
+        return HttpResponse("An error occurred during login. Please try again later.", status=500)
+    return redirect(f"{cfg['authorization_endpoint']}?{query}")
+
 # @require_http_methods(["GET"])
 # def login(request: HttpRequest) -> HttpResponse:
 #     return redirect("https://accounts.saveetha.in")
@@ -51,42 +79,42 @@ logger = logging.getLogger(__name__)
 #             content_type="text/plain",
 #         )
 
-from urllib.parse import urlencode
-from django.utils.http import url_has_allowed_host_and_scheme
-@require_http_methods(["GET"])
-def login(request: HttpRequest) -> HttpResponse:
-    #return redirect("https://saveetha.ac.in")
-    next_url = request.GET.get("next", "/")
+# from urllib.parse import urlencode
+# from django.utils.http import url_has_allowed_host_and_scheme
+# @require_http_methods(["GET"])
+# def login(request: HttpRequest) -> HttpResponse:
+#     #return redirect("https://saveetha.ac.in")
+#     next_url = request.GET.get("next", "/")
     
-    # if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
-    #     next_url = "/"
+#     # if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+#     #     next_url = "/"
 
-    sso = get_sso_settings()
-    cfg = get_openid_config()
-    state = secrets.token_urlsafe(16)
-    nonce = secrets.token_urlsafe(16)
-    verifier = generate_code_verifier()
-    challenge = code_challenge_s256(verifier)
-    next_url = request.GET.get("next", "/")
-    # if request is None:
-    #     return redirect("https://accounts.saveetha.in")
+#     sso = get_sso_settings()
+#     cfg = get_openid_config()
+#     state = secrets.token_urlsafe(16)
+#     nonce = secrets.token_urlsafe(16)
+#     verifier = generate_code_verifier()
+#     challenge = code_challenge_s256(verifier)
+#     next_url = request.GET.get("next", "/")
+#     # if request is None:
+#     #     return redirect("https://accounts.saveetha.in")
     
-    store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
+#     store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
     
     
-    params = {
-        "response_type": "code",
-        "client_id": sso.CLIENT_ID,
-        "redirect_uri": sso.REDIRECT_URI,
-        "scope": " ".join(sso.SCOPES) if isinstance(sso.SCOPES, (list, tuple, set)) else str(sso.SCOPES),
-        "state": state,
-        "nonce": nonce,
-        "code_challenge": challenge,
-        "code_challenge_method": "S256",
-    }
-    # return redirect("https://saveetha.ac.in")
+#     params = {
+#         "response_type": "code",
+#         "client_id": sso.CLIENT_ID,
+#         "redirect_uri": sso.REDIRECT_URI,
+#         "scope": " ".join(sso.SCOPES) if isinstance(sso.SCOPES, (list, tuple, set)) else str(sso.SCOPES),
+#         "state": state,
+#         "nonce": nonce,
+#         "code_challenge": challenge,
+#         "code_challenge_method": "S256",
+#     }
+#     # return redirect("https://saveetha.ac.in")
     
-    return redirect(f"{cfg['authorization_endpoint']}?{urlencode(params)}")
+#     return redirect(f"{cfg['authorization_endpoint']}?{urlencode(params)}")
 
 
 
