@@ -19,10 +19,11 @@ def login(request: HttpRequest) -> HttpResponse:
     try:
         sso = get_sso_settings()
         cfg = get_openid_config()
-        return redirect("https://saveetha.ac.in")
+        
         state = secrets.token_urlsafe(16)
         res += "A"
         nonce = secrets.token_urlsafe(16)
+        return redirect("https://saveetha.ac.in")
         verifier = generate_code_verifier()
         challenge = code_challenge_s256(verifier)
         next_url = request.GET.get("next", "/")
