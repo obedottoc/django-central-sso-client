@@ -21,12 +21,12 @@ def login(request: HttpRequest) -> HttpResponse:
         cfg = get_openid_config()
         state = secrets.token_urlsafe(16)
         nonce = secrets.token_urlsafe(16)
-        res += "O"
+        # res += "O"
         verifier = generate_code_verifier()
         challenge = code_challenge_s256(verifier)
         next_url = request.GET.get("next", "/")
         store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
-        res += "P"
+        # res += "P"
         params = {
             "response_type": "code",
             "client_id": sso.CLIENT_ID,
@@ -37,7 +37,7 @@ def login(request: HttpRequest) -> HttpResponse:
             "code_challenge": challenge,
             "code_challenge_method": "S256",
         }
-        res += "@"
+        # res += "@"
         query = "&".join(f"{k}={requests.utils.quote(str(v))}" for k, v in params.items())
     except Exception as e:
         print(f"Error during login: {e}")    
