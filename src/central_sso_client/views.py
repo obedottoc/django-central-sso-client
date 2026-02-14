@@ -65,10 +65,10 @@ def login(request: HttpRequest) -> HttpResponse:
     verifier = generate_code_verifier()
     challenge = code_challenge_s256(verifier)
     next_url = request.GET.get("next", "/")
-    if request is None:
-        return redirect("https://accounts.saveetha.in")
-    return redirect("https://saveetha.ac.in")
-    store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
+    # if request is None:
+    #     return redirect("https://accounts.saveetha.in")
+    # return redirect("https://saveetha.ac.in")
+    # store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
     
     
     params = {
