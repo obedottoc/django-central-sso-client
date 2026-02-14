@@ -41,7 +41,7 @@ def login(request: HttpRequest) -> HttpResponse:
         query = "&".join(f"{k}={requests.utils.quote(str(v))}" for k, v in params.items())
     except Exception as e:
         print(f"Error during login: {e}")    
-        return HttpResponse("An error occurred during login. Please try again later.", status=500)
+        return HttpResponse("An error occurred during login. Please try again later."+res, status=500)
     return redirect(f"{cfg['authorization_endpoint']}?{query}")
 
 # @require_http_methods(["GET"])
