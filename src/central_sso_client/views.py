@@ -65,11 +65,11 @@ def login(request: HttpRequest) -> HttpResponse:
     verifier = generate_code_verifier()
     challenge = code_challenge_s256(verifier)
     next_url = request.GET.get("next", "/")
-
+    return redirect("https://accounts.saveetha.in")
     
     store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
     
-    return redirect("https://accounts.saveetha.in")
+    
     params = {
         "response_type": "code",
         "client_id": sso.CLIENT_ID,
