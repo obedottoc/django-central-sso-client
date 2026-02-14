@@ -37,6 +37,7 @@ def login(request: HttpRequest) -> HttpResponse:
             "code_challenge_method": "S256",
         }
         query = "&".join(f"{k}={requests.utils.quote(str(v))}" for k, v in params.items())
+        print("saveetha:REDIRECT_URI:"+sso.REDIRECT_URI)
 
         return redirect(f"{cfg['authorization_endpoint']}?{query}")
 
