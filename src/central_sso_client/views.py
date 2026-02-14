@@ -9,7 +9,8 @@ from .discovery import get_openid_config
 from .jwks import validate_jwt
 from .pkce import generate_code_verifier, code_challenge_s256
 from .state import store_auth_flow, pop_and_validate_flow
-
+import logging
+logger = logging.getLogger(__name__)
 
 @require_http_methods(["GET"])
 def login(request: HttpRequest) -> HttpResponse:
@@ -22,7 +23,9 @@ def login(request: HttpRequest) -> HttpResponse:
         verifier = generate_code_verifier()
         challenge = code_challenge_s256(verifier)
         next_url = request.GET.get("next", "/")
+
         store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
+
         params = {
             "response_type": "code",
             "client_id": sso.CLIENT_ID,
@@ -34,10 +37,17 @@ def login(request: HttpRequest) -> HttpResponse:
             "code_challenge_method": "S256",
         }
         query = "&".join(f"{k}={requests.utils.quote(str(v))}" for k, v in params.items())
-    except Exception as e:
-        print(f"Error during login: {e}")    
-        return HttpResponse("An error occurred during login. Please try again later.", status=500)
-    return redirect(f"{cfg['authorization_endpoint']}?{query}")
+
+        return redirect(f"{cfg['authorization_endpoint']}?{query}")
+
+    except Exception:
+        # This logs the full traceback (critical for finding the real reason)
+        logger.exception("Error during login view")
+        return HttpResponse(
+            "An error occurred during login. Please try again later.",
+            status=500,
+            content_type="text/plain",
+        )
 
 
 @require_http_methods(["GET"])
