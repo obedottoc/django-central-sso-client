@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 @require_http_methods(["GET"])
 def login(request: HttpRequest) -> HttpResponse:
-    return redirect("https://accounts.saveetha.in")
+    # return redirect("https://accounts.saveetha.in")
     try:
         sso = get_sso_settings()
         cfg = get_openid_config()
