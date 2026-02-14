@@ -15,16 +15,18 @@ logger = logging.getLogger(__name__)
 @require_http_methods(["GET"])
 def login(request: HttpRequest) -> HttpResponse:
     # return redirect("https://accounts.saveetha.in")
-    return HttpResponse("An error occurred during login. Please try again later.", status=500)
+    res = "Start"
     try:
         sso = get_sso_settings()
         cfg = get_openid_config()
         state = secrets.token_urlsafe(16)
         nonce = secrets.token_urlsafe(16)
+        res += "O"
         verifier = generate_code_verifier()
         challenge = code_challenge_s256(verifier)
         next_url = request.GET.get("next", "/")
         store_auth_flow(request, state=state, nonce=nonce, code_verifier=verifier, next_url=next_url)
+        res += "P"
         params = {
             "response_type": "code",
             "client_id": sso.CLIENT_ID,
@@ -35,10 +37,11 @@ def login(request: HttpRequest) -> HttpResponse:
             "code_challenge": challenge,
             "code_challenge_method": "S256",
         }
+        res += "@"
         query = "&".join(f"{k}={requests.utils.quote(str(v))}" for k, v in params.items())
     except Exception as e:
         print(f"Error during login: {e}")    
-        return HttpResponse("An error occurred during login. Please try again later.", status=500)
+        return HttpResponse("An error occurred during login. Please try again later."+res, status=500)
     return redirect(f"{cfg['authorization_endpoint']}?{query}")
 
 # @require_http_methods(["GET"])
