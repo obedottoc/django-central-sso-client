@@ -124,6 +124,8 @@ def login(request: HttpRequest) -> HttpResponse:
 
 @require_http_methods(["GET"])
 def callback(request: HttpRequest) -> HttpResponse:
+    logger.exception("This is callback exception")
+    print("This is print statement")
     sso = get_sso_settings()
     cfg = get_openid_config()
     code = request.GET.get("code")
