@@ -130,10 +130,11 @@ def callback(request: HttpRequest) -> HttpResponse:
     cfg = get_openid_config()
     code = request.GET.get("code")
     state = request.GET.get("state")
+    logger.exception("This is callback exception1")
     if not code or not state:
         return redirect("/sso/login/")
     flow = pop_and_validate_flow(request, state)
-
+    logger.exception("This is callback exception2")
     data = {
         "grant_type": "authorization_code",
         "code": code,
@@ -142,12 +143,14 @@ def callback(request: HttpRequest) -> HttpResponse:
         "code_verifier": flow["code_verifier"],
     }
     headers = {}
+    logger.exception("This is callback exception3")
     auth = None
     if sso.CLIENT_SECRET:
         auth = (sso.CLIENT_ID, sso.CLIENT_SECRET)
     resp = requests.post(cfg["token_endpoint"], data=data, headers=headers, auth=auth, timeout=10)
     resp.raise_for_status()
     tokens = resp.json()
+    logger.exception("This is callback exception4")
 
     id_token = tokens.get("id_token")
     claims = validate_jwt(id_token, issuer=cfg["issuer"], audience=sso.CLIENT_ID) if id_token else {}
@@ -158,6 +161,7 @@ def callback(request: HttpRequest) -> HttpResponse:
         "preferred_username": claims.get("preferred_username"),
         "name": claims.get("name"),
     }
+    logger.exception("This is callback exception5")
     if not user_data.get("sub") and tokens.get("access_token"):
         info = requests.get(
             cfg["userinfo_endpoint"],
@@ -166,7 +170,7 @@ def callback(request: HttpRequest) -> HttpResponse:
         )
         if info.status_code == 200:
             user_data.update(info.json())
-
+    logger.exception("This is callback exception6")
     request.session[sso.SESSION_KEY] = {
         "user": user_data,
         "tokens": tokens,
