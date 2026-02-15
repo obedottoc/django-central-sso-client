@@ -23,7 +23,7 @@ def login(request: HttpRequest) -> HttpResponse:
         state = secrets.token_urlsafe(16)
         res += "A"
         nonce = secrets.token_urlsafe(16)
-        return redirect("https://saveetha.ac.in")
+        # return redirect("https://saveetha.ac.in")
         verifier = generate_code_verifier()
         challenge = code_challenge_s256(verifier)
         next_url = request.GET.get("next", "/")
